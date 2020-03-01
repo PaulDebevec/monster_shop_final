@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Bulk Discount Index Page' do
+RSpec.describe 'Bulk Discount Show Page' do
   describe "As a merchant" do
     before :each do
       @merchant_1 = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
@@ -12,21 +12,23 @@ RSpec.describe 'Bulk Discount Index Page' do
       @discount_3 = @merchant_2.bulk_discounts.create!(name: "Save 10% on Items for Bulk Orders", description: "Buy 20 of an item, receive 20% off each of those items", discount_percentage: 20, item_count_threshold: 20)
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@merchant_user)
     end
-    it "At '/merchant' I see each discount belonging to that merchant" do
+
+    it "On the merchant dashboard I see the name of each discount is a link to it's show page" do
       visit '/merchant'
 
       within "#discount-#{@discount_1.id}" do
-        expect(page).to have_content("Yoohoo")
-        expect(page).to have_content("Big Summer Blowout!")
+        click_link "#{@discount_1.name}"
       end
 
-      within "#discount-#{@discount_2.id}" do
-        expect(page).to have_content("10% Off Bulk Discount")
-        expect(page).to have_content("Buy 20 of an item, receive 10% off each item!")
-      end
+      expect(page).to have_content("#{@discount_1.name}")
+      expect(page).to have_content("#{@discount_1.description}")
+      expect(page).to have_content("Discount: #{@discount_1.discount_percentage}% off")
+      expect(page).to have_content("Item Threshold: #{@discount_1.item_count_threshold}")
 
-      expect(page).not_to have_content("Save 10% on Items for Bulk Orders")
-      expect(page).not_to have_content("Buy 20 of an item, receive 20% off each of those items")
+      expect(page).not_to have_content("#{@discount_2.name}")
+      expect(page).not_to have_content("#{@discount_2.description}")
+      expect(page).not_to have_content("Discount: #{@discount_3.discount_percentage}% off")
+      expect(page).not_to have_content("Item Threshold: #{@discount_3.item_count_threshold}")
     end
   end
 end
