@@ -13,8 +13,24 @@ class Merchant::BulkDiscountsController < Merchant::BaseController
       redirect_to "/merchant/bulk_discounts/#{bulk_discount.id}"
       flash[:success] = "Bulk Discount Created"
     else
-      flash[:success] = bulk_discount.errors.full_messages.to_sentence
-      render :new
+      flash[:error] = bulk_discount.errors.full_messages.to_sentence
+      redirect_to new_merchant_bulk_discount_path
+    end
+  end
+
+  def edit
+    @bulk_discount = BulkDiscount.find(params[:id])
+  end
+
+  def update
+    bulk_discount = BulkDiscount.find(params[:id])
+    bulk_discount.update(bulk_discount_params)
+    if bulk_discount.save
+      flash[:success] = "#{bulk_discount.name} Updated Successfully"
+      redirect_to merchant_bulk_discount_path(bulk_discount.id)
+    else
+      flash[:error] = bulk_discount.errors.full_messages.to_sentence
+      render :edit
     end
   end
 
