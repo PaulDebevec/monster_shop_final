@@ -14,3 +14,11 @@
     </section>
   <% end %>
 </section>
+
+<h2>Bulk Discounts</h2>
+<% @merchant.bulk_discounts.each do |discount| %>
+<section id="discount-<%= discount.id%>">
+  <%= discount.name %><br>
+  <%= discount.description %><br>
+  <% end %>
+</section>
