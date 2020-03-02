@@ -21,5 +21,6 @@
 <section id="discount-<%= discount.id%>">
   <%= link_to "#{discount.name}", "/merchant/bulk_discounts/#{discount.id}"%><br>
   <%= discount.description %><br>
+  <%= link_to "Delete Discount", "/merchant/bulk_discounts/#{discount.id}", method: :delete %>
   <% end %>
 </section>
