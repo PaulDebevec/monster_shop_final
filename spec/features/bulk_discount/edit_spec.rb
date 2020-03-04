@@ -31,5 +31,22 @@ describe "Edit Bulk Discount" do
       expect(page).to have_content("Discount: 5% off")
       expect(page).to have_content("Item Threshold: 10")
     end
+
+    it "I see a flash message when I fail to fill in all fields" do
+
+      visit "/merchant/bulk_discounts/#{@discount_1.id}"
+      click_link "Edit Bulk Discount"
+      expect(current_path).to eq("/merchant/bulk_discounts/#{@discount_1.id}/edit")
+
+      fill_in :name, with: "August Sale"
+      fill_in :description, with: ""
+      fill_in :discount_percentage, with: 5
+      fill_in :item_count_threshold, with: 10
+      click_button "Save Changes"
+
+      expect(current_path).to eq("/merchant/bulk_discounts/#{@discount_1.id}/edit")
+
+      expect(page).to have_content("Description can't be blank")
+    end
   end
 end

@@ -45,7 +45,7 @@ describe "Create New Bulk Discount" do
       click_button "Post Discount"
 
       expect(current_path).to eq("/merchant/bulk_discounts/new")
-      expect(page).to have_content("Discount percentage can't be blank and Item count threshold can't be blank")
+      expect(page).to have_content("Item count threshold can't be blank and Discount percentage is not included in the list")
     end
   end
 end
