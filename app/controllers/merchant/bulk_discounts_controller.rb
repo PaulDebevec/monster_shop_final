@@ -30,12 +30,12 @@ class Merchant::BulkDiscountsController < Merchant::BaseController
       redirect_to merchant_bulk_discount_path(bulk_discount.id)
     else
       flash[:error] = bulk_discount.errors.full_messages.to_sentence
-      render :edit
+      redirect_to "/merchant/bulk_discounts/#{bulk_discount.id}/edit"
     end
   end
 
   def destroy
-    
+
     bulk_discount = BulkDiscount.find(params[:id])
     bulk_discount.destroy
     flash[:success] = "Discount Deleted"
