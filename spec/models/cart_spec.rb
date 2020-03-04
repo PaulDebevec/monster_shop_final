@@ -23,10 +23,11 @@ RSpec.describe Cart do
 
     it '.add_item()' do
       @cart.add_item(@hippo.id.to_s)
+      @cart.add_item(@giant.id.to_s)
 
       expect(@cart.contents).to eq({
         @ogre.id.to_s => 1,
-        @giant.id.to_s => 2,
+        @giant.id.to_s => 3,
         @hippo.id.to_s => 1
         })
     end
@@ -62,6 +63,31 @@ RSpec.describe Cart do
       @cart.less_item(@giant.id.to_s)
 
       expect(@cart.count_of(@giant.id)).to eq(1)
+    end
+
+    it ".get_best_discount()" do
+      merchant_1 = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
+      discount_1 = merchant_1.bulk_discounts.create!(name: "Yoohoo", description: "Big Summer Blowout!", discount_percentage: 5, item_count_threshold: 5)
+      discount_2 = merchant_1.bulk_discounts.create!(name: "10% Off Bulk Discount", description: "Buy 20 of an item, receive 10% off each item!", discount_percentage: 10, item_count_threshold: 20)
+      ogre = merchant_1.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 10 )
+      cart = Cart.new({
+        ogre.id.to_s => 10
+        })
+
+      expect(cart.get_best_discount(ogre.id)).to eq(discount_1)
+    end
+
+    it ".apply_discount(discount, item_price)" do
+      merchant_1 = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
+      discount_1 = merchant_1.bulk_discounts.create!(name: "Yoohoo", description: "Big Summer Blowout!", discount_percentage: 5, item_count_threshold: 5)
+      discount_2 = merchant_1.bulk_discounts.create!(name: "10% Off Bulk Discount", description: "Buy 20 of an item, receive 10% off each item!", discount_percentage: 10, item_count_threshold: 20)
+      ogre = merchant_1.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 10 )
+      cart = Cart.new({ogre.id.to_s => 10})
+      
+      discount = cart.get_best_discount(ogre.id)
+      item_price = ogre.price
+
+      expect(cart.apply_discount(discount, item_price)).to eq(19.0)
     end
   end
 end

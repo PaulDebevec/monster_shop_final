@@ -1,0 +1,16 @@
+<h1>Edit <%= @bulk_discount.name %></h1>
+<%= form_tag "/merchant/bulk_discounts/#{@bulk_discount.id}", method: :patch  do %>
+  <%= label_tag :name %>
+  <%= text_field_tag :name, @bulk_discount.name %>
+
+  <%= label_tag :description %>
+  <%= text_field_tag :description, @bulk_discount.description%>
+
+  <%= label_tag :discount_percentage %>
+  <%= text_field_tag :discount_percentage, @bulk_discount.discount_percentage %>
+
+  <%= label_tag :item_count_threshold %>
+  <%= text_field_tag :item_count_threshold, @bulk_discount.item_count_threshold %>
+
+  <%= submit_tag "Save Changes" %>
+<% end %>
